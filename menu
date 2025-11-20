@@ -1,0 +1,6 @@
+﻿const onOpen = () => {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu("Скрипт")
+  .addItem("Поиск", "dataRangeFilter")
+  .addToUi();
+}

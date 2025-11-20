@@ -1,0 +1,45 @@
+﻿const dataRangeFilter = () => {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Database");
+
+  const lastRow = sheet.getLastRow();
+  
+  // 1. Определяем весь диапазон данных 
+  const range = sheet.getRange(1, 1, lastRow, 5);
+  
+  // 2. Получаем значение фильтра из ячейки F1
+  let cellValue = sheet.getRange("H1").getValue();
+  const cellCategory = sheet.getRange("I1").getValue();
+  
+  // 3. Определяем позицию столбца для фильтрации. 
+  const getColumnPosition = (name, col) => {
+    if (name === "Артикул") {
+      return col = 1;
+    }else if (name === "Коробка") {
+      return col = 4;
+    }
+  }
+
+  const columnPosition = getColumnPosition(cellCategory);
+
+
+  // --- Настройка Фильтра ---
+  
+  // 4. Удаляем любой существующий фильтр, чтобы применить новый
+  const existingFilter = sheet.getFilter();
+  if (existingFilter) {
+    existingFilter.remove();
+  }
+
+  // 5. Создаем новый фильтр для всего диапазона
+  const filter = range.createFilter();
+  
+  // 6. Создаем критерий фильтрации: "текст содержит" (whenTextContains)
+  // Мы преобразуем cellValue в строку, чтобы убедиться, что она корректно используется в критерии.
+  const criteria = SpreadsheetApp.newFilterCriteria()
+      .whenTextContains(String(cellValue)) 
+      .build();
+      
+  // 7. Применяем критерий к 3-му столбцу ("коробка")
+  filter.setColumnFilterCriteria(columnPosition, criteria);
+
+}
